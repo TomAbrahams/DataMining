@@ -15,23 +15,25 @@ from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 
 
-# Load dataset
+
+# Loading the set from UCI, specifically iris.data. Did this to make this portable.
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
+# Putting headings according to the items.
 names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
 dataset = pandas.read_csv(url, names=names)
 
-# shape
-#print(dataset.shape)
-
+# Looking at the data shape
+print(dataset.shape)
+print("\n")
 #print
 #print ("\n")
 #print(dataset.head(20))
 
-#print ("\nLet's get a statisitical summary")
-#print(dataset.describe())
+print ("\nLet's get a statisitical summary")
+print(dataset.describe())
 
-#print ("\nLet's get a better look at this data (class size)")
-#print(dataset.groupby('class').size())
+print ("\nLet's get a better look at this data (class size)")
+print(dataset.groupby('class').size())
 
 dataset.plot(kind='box', subplots=True, layout=(2,2), sharex=False, sharey=False)
 plt.show()
@@ -45,11 +47,15 @@ scatter_matrix(dataset)
 plt.show()
 
 #Time to split our data set 80% to train, 20% for validation.
-#spliting out the validation set
+#Begin spliting out the validation set
 array = dataset.values;
+#Copies ['sepal-length', 'sepal-width', 'petal-length', 'petal-width'] into X 
 X = array[:,0:4] #copies array[0],array[1],array[2],array[3]
+#Gets the classifiers for output array[4] = ['class']
 Y = array[:,4]  #copies array[4]
+#Keeping 20% of the data for validation testing.
 validation_size = 0.20
+# For random number generation.
 seed = 7
 X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, test_size = validation_size, random_state = seed)
 
@@ -93,8 +99,11 @@ plt.show()
 knn = KNeighborsClassifier()
 knn.fit(X_train, Y_train)
 predictions = knn.predict(X_validation)
+# Our Accuracy score
 print(accuracy_score(Y_validation, predictions))
+# The confusion matrix
 print(confusion_matrix(Y_validation, predictions))
+# This is for our classification (Validation vs predictions)
 print(classification_report(Y_validation, predictions))
 
 
