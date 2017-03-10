@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 09 10:29:59 2017
+Created on Thu Mar 09 23:27:57 2017
+
 @author: Thomas
 """
 
-# Code from Chapter 4 of Machine Learning: An Algorithmic Perspective (2nd Edition)
-# by Stephen Marsland (http://stephenmonika.net)
-
-# You are free to use, change, or redistribute the code in any way you wish for
-# non-commercial purposes, but please maintain the name of the original author.
-# This code comes with no warranty of any kind.
-
-# Stephen Marsland, 2008, 2014
-
-# The iris classification example
-
-def preprocessIris(infile,outfile):
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Mar 09 10:29:59 2017
+@author: Thomas
+"""
+#
+def preprocessEColi(infile,outfile):
     #The number has a sequence name. This should be removed.
     #Need to change outputs.
     stext1 = 'cp' #will
@@ -72,18 +68,26 @@ def preprocessIris(infile,outfile):
 
 import numpy as np
 # Preprocessor to remove the test (only needed once)
-preprocessIris('D:\\ecoli\\ecoli.data','ecoli_proc.data')
+#preprocessEColi('F:\\ecoli\\ecoli.data','ecoli_proc.data')
 
-with open("D:\\ecoli\\ecoli.data") as f:
+with open("F:\\ecoli\\ecoli_proc.data") as f:
     ncols = len(f.readline().split())
 print(ncols)
 print('\n')
 ecoli = np.loadtxt('ecoli_proc.data',dtype='S', usecols = range(1,ncols)).astype(np.float)
-
+print(ecoli.shape)
 print(ecoli)
-ecoli[:,:8] = ecoli[:,:8]-ecoli[:,:8].mean(axis=0)
+ecoli[:,:7] = ecoli[:,:7]-ecoli[:,:7].mean(axis=0)
 imax = np.concatenate((ecoli.max(axis=0)*np.ones((1,8)),np.abs(ecoli.min(axis=0)*np.ones((1,8)))),axis=0).max(axis=0)
-ecoli[:,:8] = ecoli[:,:8]/imax[:8]
+print("imax size")
+print(imax.shape)
+print('\n')
+print(ecoli[:,:8].shape)
+print('\n')
+ecoli[:,:7] = ecoli[:,:7]/imax[:7]
+#dataset[:,:n-1] = dataset[:,:n-1]-dataset[:,:n-1].mean(axis=0)
+#imax= np.concatenate((dataset.max(axis=0)*np.ones((1,n-1))), np.abs(dataset.min(axis=0)*np.ones((1,n-1))),axis=0).max(axis=0)
+#dataset[:,:n-1] = dataset[:,:n-1]/imax[:n-1]
 print ("Here comes some values\n")
 print ecoli[0:5,:]
 
@@ -109,33 +113,35 @@ target[indices,7] = 1
 # Randomly order the data
 order = range(np.shape(ecoli)[0])
 np.random.shuffle(order)
+
 ecoli = ecoli[order,:]
 target = target[order,:]
+print("Ecoli \n")
+print(ecoli)
 
-
-train = ecoli[0:200,0:7] # Want every second element, from colums 0,1,2,3
+train = ecoli[::2,0:7] # Want every second element, from colums 0,1,2,3
 print("Shape of train is ")
 print(train.shape)
 print('\n')
-traint = target[0:200]    # Want to target every second element period.
+traint = target[::2]    # Want to target every second element period.
 print("Shape of traint is ")
 print(traint.shape)
 print('\n')
-valid = ecoli[200:268,0:7]  # Starting from row 1 get me the forth element, from columns 0,1,2,3 so the 5th item
+valid = ecoli[1::4,0:7]  # Starting from row 1 get me the forth element, from columns 0,1,2,3 so the 5th item
 print("output of valid is: \n")
 print(valid.shape)
 print("\nShape of valid is ")
 print(valid.shape)
 print('\n')
-validt = target[200:268]   # From row 1, get me every 4th element. this has 84 elements so the 5th item
+validt = target[1::4]   # From row 1, get me every 4th element. this has 84 elements so the 5th item
 print("Shape of validt is ")
 print(validt.shape)
 print('\n')
-test = ecoli[268:335, 0:7]   # From the third row on, get me every 4th element in columns 0,1,2,3 so the 7th item
+test = ecoli[3::4,0:7]   # From the third row on, get me every 4th element in columns 0,1,2,3 so the 7th item
 print("Shape of test is ")
 print(test.shape)
 print('\n')
-testt = target[268:335]    # From the third row on, get me every 4th element 7th.
+testt = target[3::4]    # From the third row on, get me every 4th element 7th.
 print("Shape of testt is ")
 print(testt.shape)
 print('\n')
