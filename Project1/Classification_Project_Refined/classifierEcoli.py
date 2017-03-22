@@ -62,19 +62,31 @@ import urllib
 
 #This is added to get the data from UCI directly.
 #Get the data from uci.
-urllib.urlretrieve("https://archive.ics.uci.edu/ml/machine-learning-databases/ecoli/ecoli.data", "ecoliUCI.data")
+#urllib.urlretrieve("https://archive.ics.uci.edu/ml/machine-learning-databases/ecoli/ecoli.data", "ecoliUCI.data")
 
 #Preprocessor to remove the test (only needed once)
-preprocessEColi('ecoliUCI.data','ecoli_proc.data')     
+#preprocessEColi('ecoliUCI.data','ecoli_proc.data')     
+dataFileExists = os.path.isfile("ecoli.data") #Returns value of true if file is in home directory.
+# If file not detected then it's time to get it.
+if dataFileExists == False:
+    #Get the data from UCI.(This will auto download the items from UCI.
+    print("Fetching data...")
+    urllib.urlretrieve("https://archive.ics.uci.edu/ml/machine-learning-databases/ecoli/ecoli.data", "ecoliUCI.data")
+    print("Finished!\n")
+
+preProcessedFileExists = os.path.isfile("ecoli_proc.data") #If file is found it will return true
+# No file found? Then let's get it.
+if preProcessedFileExists == False:
+    print("Preprocessing...")
+    preprocessEColi('ecoliUCI.data','ecoli_proc.data')   
+    print("Finished!\n")
 
 with open("ecoli_proc.data") as f:
     ncols = len(f.readline().split())
 
 # Get the text file
 
-
 ecoli = np.loadtxt('ecoli_proc.data',dtype='S', usecols = range(1,ncols)).astype(np.float)
-# Normalization of DATA
 ecoli[:,:7] = ecoli[:,:7]-ecoli[:,:7].mean(axis=0)
 imax = np.concatenate((ecoli.max(axis=0)*np.ones((1,8)),np.abs(ecoli.min(axis=0)*np.ones((1,8)))),axis=0).max(axis=0)
 #Normalize the last item.
@@ -123,5 +135,5 @@ net = mlp.mlp(train,traint,21,outtype='softmax')
 net.mlptrain(train,traint,0.40, 350)
 net.earlystopping(train,traint,valid,validt,0.20)
 net.confmat(test,testt)
-#print train.max(axis=0), train.min(axis=0)
+
 
